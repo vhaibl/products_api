@@ -6,7 +6,7 @@ from core.models import Product, Category
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        exclude = ('id',)
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -15,8 +15,11 @@ class ProductSerializer(serializers.ModelSerializer):
         exclude = ('is_deleted',)
 
     def validate_categories(self, data):
-        if len(data) not in range(2,10):
+        if len(data) not in range(2, 10):
             raise serializers.ValidationError('Must be from 2 to 10 categories')
         return data
 
-
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["categories"] = CategorySerializer(instance.categories.all(), many=True).data
+        return rep

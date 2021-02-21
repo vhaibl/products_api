@@ -2,10 +2,16 @@ from django.db import models
 
 
 class Category(models.Model):
-    type = models.CharField(max_length=32, primary_key=True)
+    type = models.CharField(max_length=32, unique=True)
 
     class Meta:
         verbose_name_plural = 'Categories'
+
+    def delete(self, *args, **kwargs):
+        if self.product_set.count() > 0:
+            raise ValueError("Category not empty")
+        else:
+            super(Category, self).delete(*args, **kwargs)
 
     def __str__(self):
         return self.type
@@ -22,6 +28,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-    def delete(self):
+    def delete(self, *args, **kwargs):
         self.is_deleted = True
         self.save()
