@@ -27,6 +27,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.GenericViewSet,
                       mixins.CreateModelMixin,
                       mixins.DestroyModelMixin,
+                      mixins.ListModelMixin,
                       ):
     serializer_class = CategorySerializer
     permission_classes = [AllowAny, ]
